@@ -166,9 +166,9 @@ class Broadlink extends EventEmitter {
     // Broadlink device has responded
     const macAddress = Buffer.alloc(6, 0);
 
-    message.copy(macAddress, 0x00, 0x3D);
+    message.copy(macAddress, 0x00, 0x3F);
     message.copy(macAddress, 0x01, 0x3E);
-    message.copy(macAddress, 0x02, 0x3F);
+    message.copy(macAddress, 0x02, 0x3D);
     message.copy(macAddress, 0x03, 0x3C);
     message.copy(macAddress, 0x04, 0x3B);
     message.copy(macAddress, 0x05, 0x3A);
@@ -345,8 +345,8 @@ class Device {
     packet[0x05] = 0xa5;
     packet[0x06] = 0xaa;
     packet[0x07] = 0x55;
-    packet[0x24] = 0x2a;
-    packet[0x25] = 0x27;
+    packet[0x24] = this.type & 0xff;
+    packet[0x25] = this.type >> 8;
     packet[0x26] = command;
     packet[0x28] = this.count & 0xff;
     packet[0x29] = this.count >> 8;
@@ -435,7 +435,7 @@ class Device {
   }
 
   sendData (data, debug = false) {
-    let packet = new Buffer([0x02, 0x00, 0x00, 0x00]);
+    let packet = new Buffer([0xD0, 0x00, 0x02, 0x00, 0x00, 0x00]);
     packet = Buffer.concat([packet, data]);
     this.sendPacket(0x6a, packet, debug);
   }
